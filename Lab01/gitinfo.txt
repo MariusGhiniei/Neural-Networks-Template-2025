@@ -1,0 +1,25 @@
+# noi update uri
+git remote add upstream https://github.com/Tensor-Reloaded/Neural-Networks-Template-2025.git
+git remote -v
+
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
+
+
+#workflow
+
+#new branch
+git checkout -b marius/lab1
+# modifici fișiere
+git add .
+git commit -m "Added my version of lab1"
+git push -u origin marius/lab1
+
+#inapoi pe main
+
+git checkout main
+
+
+
