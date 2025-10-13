@@ -4,8 +4,8 @@ import math
 import pathlib
 
 def load_system(path: pathlib.Path) -> tuple[list[list[float]], list[float]]:
-    A = []
-    B = []
+    A: list[list[float]] = []
+    B: list[float] = []
     with open(path, "r") as file:
         for line in file:
             line = line.strip()
@@ -14,8 +14,8 @@ def load_system(path: pathlib.Path) -> tuple[list[list[float]], list[float]]:
             B.append(float(right))
             comps = left.split(" ")
 
-            sign = 1.0
-            row = []
+            sign : float = 1.0
+            row :list[float] = []
             for comp in comps:
                 if comp == '+':
                     sign = 1.0
@@ -40,8 +40,11 @@ def load_system(path: pathlib.Path) -> tuple[list[list[float]], list[float]]:
             A.append(row)
 
     return A,B
-
+# macOS path
 A, B = load_system(pathlib.Path("/Users/marius/PycharmProjects/Neural-Networks-Template-2025/Lab02/system.txt"))
+
+# path
+#A, B = load_system(pathlib.Path("system.txt"))
 
 print(f"{A=} {B=}")
 
@@ -74,9 +77,9 @@ def transpose(matrix: list[list[float]]) -> list[list[float]]:
     rows = len(matrix)
     cols = len(matrix[0])
 
-    At = []
+    At : list[list[float]] = []
     for c in range(cols):
-        row = []
+        row : list[float] = []
         for r in range(rows):
             row.append(matrix[r][c])
         At.append(row)
@@ -86,9 +89,12 @@ print(f"{transpose(A)=}")
 
 ## ex 2.5 - Matrix-vector multiplication
 def multiply(matrix: list[list[float]], vector: list[float]) -> list[float]:
-    res = []
+    res : list[float] = []
+    if len(matrix[0]) != len(vector):
+        raise TypeError("Invalid multiplication")
+
     for i in range(len(matrix)):
-        s = 0
+        s : float = 0
         for j in range(len(matrix[i])):
             s = s + matrix[i][j]*vector[j]
         res.append(s)
@@ -102,7 +108,6 @@ def replace_column(matrix: list[list[float]], index: int, col: list[float]) -> N
     for i in range(len(matrix)):
         matrix[i][index] = col[i]
 
-
 def solve_cramer(matrix: list[list[float]], vector: list[float]) -> list[float]:
     Ax = copy.deepcopy(matrix)
     Ay = copy.deepcopy(matrix)
@@ -112,8 +117,61 @@ def solve_cramer(matrix: list[list[float]], vector: list[float]) -> list[float]:
     replace_column(Ay, 1, vector)
     replace_column(Az, 2, vector)
 
-    detA = determinant(matrix)
+    detA : float = determinant(matrix)
+
+    if abs(detA) < 1e-10:
+        raise ValueError(f"The determinant is too close to zero, det = {detA:.5e}")
 
     return [determinant(Ax)/detA, determinant(Ay)/detA, determinant(Az)/detA]
 
 print(f"{solve_cramer(A, B)=}")
+
+## ex 3 - Solving using Inversion
+
+def minor(matrix: list[list[float]], i: int, j: int) -> list[list[float]]:
+    res : list[list[float]] = []
+    for ii in range(len(matrix)):
+        row : list[float] = []
+        for jj in range(len(matrix)):
+            if ii != i and jj != j:
+                row.append(matrix[ii][jj])
+        if len(row) > 0:
+            res.append(row)
+    return res
+
+def determinant2d(matrix: list[list[float]]) -> float:
+    a, b = matrix[0]
+    c, d = matrix[1]
+
+    return a*d - b*c
+
+def cofactor(matrix: list[list[float]]) -> list[list[float]]:
+    coef : list[list[float]] = []
+    for i in range(len(matrix)):
+        row : list[float] = []
+        for j in range(len(matrix)):
+            if (i + j) % 2 == 0:
+                row.append(determinant2d(minor(matrix,i,j)))
+            else:
+                row.append((-1)*determinant2d(minor(matrix,i,j)))
+        coef.append(row)
+    return coef
+
+def adjoint(matrix: list[list[float]]) -> list[list[float]]:
+    return cofactor(transpose(matrix))
+
+def solve(matrix: list[list[float]], vector: list[float]) -> list[float]:
+    inv : list[list[float]] = adjoint(matrix)
+    det : float = determinant(matrix)
+
+    if abs(det) < 1e-10:
+        raise ValueError(f"The determinant is too close to zero, det = {det:.5e}")
+
+    det = 1.0 / det
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            inv[i][j] = det * inv[i][j]
+    return multiply(inv,vector)
+
+print(f"{solve(A, B)=}")
