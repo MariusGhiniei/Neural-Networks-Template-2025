@@ -61,7 +61,7 @@ def accuracy(X : np.ndarray, Y : np.ndarray, W : np.ndarray, b:np.ndarray) -> fl
     y_true = np.argmax(Y, axis=1)
     return (y_pred == y_true).mean()
 
-#parameters
+#Hyper - parameters
 epochs = 30
 batch_size = 128
 lr = 0.2
