@@ -102,8 +102,8 @@ for epoch in range(1, epochs + 1):
         der_b = np.sum(der_logits, axis=0)
 
         # Update
-        W -= lr * der_W
-        b -= lr * der_b
+        W = W - lr * der_W
+        b = b - lr * der_b
         lr = 0.1 * (.95 ** epoch)
 
     train_acc = accuracy(X_train, Y_train, W, b)
