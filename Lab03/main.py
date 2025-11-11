@@ -101,7 +101,7 @@ for epoch in range(1, epochs + 1):
         der_W = Xb.T @ der_logits + l2 * W
         der_b = np.sum(der_logits, axis=0)
 
-        # Update
+        #Update
         W = W - lr * der_W
         b = b - lr * der_b
         lr = 0.1 * (.95 ** epoch)
