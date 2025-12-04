@@ -68,7 +68,7 @@ def getClass(y, C):
     return matZero
 
 #hyper-parameters
-epochs = 150
+epochs = 170
 batch  = 1024
 lr = 0.18
 momentum = 0.9
