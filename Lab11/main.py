@@ -280,32 +280,6 @@ def train(cfg):
 
     torch.save(q_net.state_dict(), cfg["model_path"])
 
-def parse_args():
-    p = argparse.ArgumentParser()
-    p.add_argument("--total_steps", type=int)
-    p.add_argument("--replay_capacity", type=int)
-    p.add_argument("--warmup_steps", type=int)
-    p.add_argument("--batch_size", type=int)
-    p.add_argument("--gamma", type=float)
-    p.add_argument("--lr", type=float)
-
-    p.add_argument("--eps_start", type=float)
-    p.add_argument("--eps_end", type=float)
-    p.add_argument("--eps_decay_steps", type=int)
-
-    p.add_argument("--target_update_every", type=int)
-    p.add_argument("--train_every", type=int)
-
-    p.add_argument("--stack_k", type=int)
-    p.add_argument("--frame_skip", type=int)
-
-    p.add_argument("--print_every", type=int)
-
-    p.add_argument("--model_path", type=str, default="dqn_flappy_pixels.pt")
-    p.add_argument("--plot", action="store_true")
-    return p.parse_args()
-
-
 if __name__ == "__main__":
     cfg = get_config()
     train(cfg)
